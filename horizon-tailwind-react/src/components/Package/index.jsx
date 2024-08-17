@@ -12,12 +12,16 @@ const Index = () => {
   const packageData=  useSelector((state)=>{
         return state.Package
     })
+    const [att,setAtt]=useState(false);
    const dispatch= useDispatch();
 
     const handleButton=()=>{
         setTog(!tog);
        
      
+    }
+    const setAtt1=()=>{
+        setAtt(!att)
     }
     const [packageName,setPackageName]=useState("");
     const [startDate,setStartDate]=useState("");
@@ -77,7 +81,7 @@ const Index = () => {
         }
         fetchingPackages();
 
-    },[])
+    },[att])
 
 
 
@@ -97,6 +101,7 @@ const SubmitPackage=()=>{
             const resData=await data.json();
             
             console.log(resData);
+            setAtt(!att);
 
         }
         catch(e)
@@ -148,7 +153,7 @@ const SubmitPackage=()=>{
       <div>
         {
             packageData.length>0&&packageData.map((item,index)=>{
-                return <PCard key={index} data={item}/>
+                return <PCard key={index} data={item} setAtt1={setAtt1}/>
             })
         }
         

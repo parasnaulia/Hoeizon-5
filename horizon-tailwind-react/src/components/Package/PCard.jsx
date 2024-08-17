@@ -3,8 +3,9 @@ import { FaAnglesDown } from "react-icons/fa6";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 
-const PCard = ({data}) => {
+const PCard = ({data,setAtt1}) => {
    const [tog,setTog]= useState(false);
+  
     console.log("This is Data")
     console.log(data)
     const deletePAckage=()=>{
@@ -20,9 +21,12 @@ const PCard = ({data}) => {
                     })
                     const dataJson=await data1.json();
                     console.log(dataJson);
-                    console.log("Api is Hitted")
+                    console.log("Api is Hitted");
+                    // window.location.reload();
+                    setAtt1();
 
                 }
+
                 catch(e)
                 {
                     console.log("there is error in delete Package"+e);
@@ -35,6 +39,8 @@ const PCard = ({data}) => {
 
 
         }
+
+        
        
      
         
@@ -51,7 +57,7 @@ const PCard = ({data}) => {
             </div>
             
         </div>
-        <div className='text-navy-500 text-lg cursor-pointer flex gap-2 items-center justify-center' onClick={deletePAckage}>
+        <div className='text-navy-500 text-lg cursor-pointer flex gap-2 items-center justify-center' onClick={()=>{setTog(!tog)}}>
             <div>Show Details</div>
             <div><FaAnglesDown/></div>
             

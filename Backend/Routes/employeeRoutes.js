@@ -110,51 +110,73 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/organizationU/:id", async (req, res) => {
-  // console.log("This is Eail"+req.body.NameData)
-  // console.log(req.params.id);
-  // console.log(process.env.SECRET_KEY);
+const DataBaseEntryOfOrganization = async(req, res, next) => {
+  // console.log("This is Middware hit");
 
-  const Token = jwt.sign(
-    {
-      EmailOrganiser: req.params.id,
-      EmailAuthor: req.body.name,
-      role: "Organization",
-    },
-    process.env.SECRET_KEY
-  );
-  // console.log("THe Gerenerated Web Token");
-  // console.log(Token);
-  const link = `http://localhost:3000/authLogin/${Token}`;
+  const data=await mySqlPool.query("")
 
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "parasnaulia88@gmail.com",
-        pass: "yyxz zpqm xqcl pzeo",
+
+  next();
+};
+
+router.post(
+  "/organizationU/:id",
+  DataBaseEntryOfOrganization,
+  async (req, res) => {
+    console.log("oo Bhai");
+    console.log(req.params.id);
+    // console.log(process.env.SECRET_KEY);
+    console.log(req.body.organizationName.organization);
+    console.log(req.body);
+
+    const Token = jwt.sign(
+      {
+        organizationName: req.body.organizationName.organization,
+        country: req.body.country.country,
+        zip: req.body.zip.zip,
+        companyEmail: req.body.companyEmail.companyEmail,
+        package1: req.body.package1.package1,
+        contact: req.body.contact.contact,
+        city: req.body.city.city,
+        website: req.body.website.website,
       },
-    });
+      process.env.SECRET_KEY
+    );
+    // console.log("THe Gerenerated Web Token");
+    console.log(Token);
+    console.log(req.body);
+    // console.log(Token);
+    const link = `http://localhost:3000/authLogin/${Token}`;
 
-    // send mail with defined transport object
-    const info = await transporter.sendMail({
-      from: {
-        name: req.params.id,
-        address: req.body.EmailData,
-      },
-      to: `${req.body.EmailData}`, // List of receivers
-      subject: "Create Account Here ✔", // Subject line
-      text: link, // Plain text body
-      html: ` Create Account ${link}`, // HTML body
-    });
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "parasnaulia88@gmail.com",
+          pass: "yyxz zpqm xqcl pzeo",
+        },
+      });
 
-    // console.log("Mail sent:", info.response);
-    return res.status(200).send({ message: "Mail sent successfully" });
-  } catch (error) {
-    console.error("Error sending mail:", error);
-    res.status(500).send({ error: "Internal server error" });
+      // send mail with defined transport object
+      const info = await transporter.sendMail({
+        from: {
+          name: req.params.id,
+          address: req.params.id,
+        },
+        to: `${req.body.companyEmail.companyEmail}`, // List of receivers
+        subject: `Create Account Here ✔ Your Default password is ${req.body.defaultPass.defaultPass}`, // Subject line
+        text: link, // Plain text body
+        html: ` Create Account ${link} and Your Default Password is :   ${req.body.defaultPass.defaultPass}`, // HTML body
+      });
+
+      console.log("Mail sent:", info.response);
+      return res.status(200).send({ message: "Mail sent successfully" });
+    } catch (error) {
+      console.error("Error sending mail:", error);
+      res.status(500).send({ error: "Internal server error" });
+    }
   }
-});
+);
 
 router.post("/auth", async (req, res) => {
   // console.log(req.body)
@@ -320,14 +342,27 @@ router.delete("/package", async (req, res) => {
   console.log("this is Backend api of delete package");
   try {
     // const
-    const data = await mySqlPool.query(
-      `DELETE from package where Name=${req.body.name}`
-    );
-  } catch (e) {}
+    const query = `DELETE FROM package WHERE Name = ?`;
+    const [result] = await mySqlPool.query(query, [req.body.name]);
+    console.log(result);
+    return res.status(200).send({
+      message: "SucessFully Deleted",
+      sucess: "true",
+    });
+  } catch (e) {
+    console.log("Dleete Api of package Problem" + e);
+    return res.status(400).send({
+      message: "Error In deleting the package",
+      success: false,
+    });
+  }
+});
 
+router.patch("/package", (req, res) => {
+  console.log("this is Update Page");
   return res.status(200).send({
-    sucess: true,
-    message: "Dats is here",
+    message: "HEllo Upadte this Side",
+    success: true,
   });
 });
 

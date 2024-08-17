@@ -47,7 +47,7 @@ let data2=""
   const [open, setOpen] = React.useState(true);
   const [currentRoute, setCurrentRoute] = React.useState("Main Dashboard");
   const OrganizationApi=()=>{
-    setPop(false)
+   
     // alert("kkh")
 
     async function fetching() {
